@@ -1,14 +1,17 @@
 package com.example.earthquakeapp;
 
 public class Work {
-    String mag,loc;
+    Double mag;
+        String    loc;
     long Date;
-    public Work(String mag,String loc, long Date){
+    private  String nurl;
+    public Work(Double mag,String loc, long Date,String url){
         this.mag=mag;
         this.loc=loc;
         this.Date=Date;
+        nurl=url;
     }
-    public String getmag(){
+    public Double getmag(){
         return mag;
     }
     public String getloc(){
@@ -17,5 +20,8 @@ public class Work {
     }
     public long getDate(){
         return Date;
+    }
+    public String getUrl() {
+        return nurl;
     }
 }

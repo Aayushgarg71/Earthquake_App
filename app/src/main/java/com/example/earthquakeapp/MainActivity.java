@@ -2,35 +2,79 @@ package com.example.earthquakeapp;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
+import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
-
-    @Override
+    private WorkAdapter mAdapter;
+    private static final String USGS_REQUEST_URL =
+            "https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&eventtype=earthquake&orderby=time&minmag=6&limit=10";    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        ArrayList<Work> earthquakes = QuakeUtil.extractEarthquakes();
-//        earthquakes.add(new Work("2.3","San Francisco","23 Nov"));
-//        earthquakes.add(new Work("5.6","London","11 Sep"));
-//        earthquakes.add(new Work("11.2","Tokyo","12 Jan"));
-//        earthquakes.add(new Work("3.4","Mexico City","27 Feb"));
-//        earthquakes.add(new Work("6.7","Moscow","20 Aug"));
-//        earthquakes.add(new Work("11","Rio de Janeiro","19 Dec"));
-//        earthquakes.add(new Work("5.5","Paris","25 Jun"));
 
-        // Find a reference to the {@link ListView} in the layout
+
         ListView earthquakeListView = (ListView) findViewById(R.id.list);
 
-        // Create a new {@link ArrayAdapter} of earthquakes
-        WorkAdapter we = new WorkAdapter(this,earthquakes);
 
-        // Set the adapter on the {@link ListView}
-        // so the list can be populated in the user interface
-        earthquakeListView.setAdapter(we);
+        mAdapter = new WorkAdapter(this, new ArrayList<Work>());
+
+
+        earthquakeListView.setAdapter(mAdapter);
+
+
+        earthquakeListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+
+                Work currentEarthquake = mAdapter.getItem(position);
+
+
+                Uri earthquakeUri = Uri.parse(currentEarthquake.getUrl());
+
+
+                Intent websiteIntent = new Intent(Intent.ACTION_VIEW, earthquakeUri);
+
+
+                startActivity(websiteIntent);
+
+            }
+
+        });
+        EarthquakeAsyncTask task = new EarthquakeAsyncTask();
+        task.execute(USGS_REQUEST_URL);
     }
-}
+    private class EarthquakeAsyncTask extends AsyncTask<String, Void, List<Work>> {
+
+        @Override
+        protected List<Work> doInBackground(String... urls) {
+
+            if (urls.length < 1 || urls[0] == null) {
+                return null;
+            }
+
+            List<Work> result = QuakeUtil.fetchEarthquakeData(urls[0]);
+            return result;
+        }
+
+        @Override
+        protected void onPostExecute(List<Work> data) {
+
+            mAdapter.clear();
+
+
+            if (data != null && !data.isEmpty()) {
+                mAdapter.addAll(data);
+            }
+        }
+    }
+    }

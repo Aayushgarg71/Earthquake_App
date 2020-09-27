@@ -27,7 +27,7 @@ public WorkAdapter(Activity context, ArrayList<Work> word){
             listitemview= LayoutInflater.from(getContext()).inflate(R.layout.list_item,parent,false);}
             Work wq = getItem(position);
             TextView tq= (TextView) listitemview.findViewById(R.id.magnitude);
-            tq.setText(wq.getmag());
+            tq.setText(wq.getmag().toString());
             TextView tq1= (TextView) listitemview.findViewById(R.id.location);
             tq1.setText(wq.getloc());
             Date dt = new Date(wq.getDate());
