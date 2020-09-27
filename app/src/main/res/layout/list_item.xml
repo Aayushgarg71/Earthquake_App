@@ -16,13 +16,23 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            tools:text="11.2" />
+            android:fontFamily="sans-serif-medium"
+            android:layout_gravity="center_vertical"
+            android:textSize="16sp"
+            android:textColor="@android:color/white"
+            tools:text="11.2"
+            android:gravity="center"
+            android:background="@drawable/magnitude_circle"/>
 
         <TextView
             android:id="@+id/location"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="7"
+            android:ellipsize="end"
+            android:fontFamily="sans-serif-medium"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="16dp"
             tools:text="London" />
         <LinearLayout
             android:layout_width="wrap_content"
